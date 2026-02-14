@@ -1,8 +1,6 @@
 import type { HostComponent, ViewProps } from 'react-native';
-
-import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
+import { requireNativeComponent } from 'react-native';
 import type { NativeEventsProps } from './types';
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 
 type NativeCoordinate = number[];
 interface NativeProps extends ViewProps {
@@ -11,8 +9,8 @@ interface NativeProps extends ViewProps {
   distanceUnit?: string;
   startOrigin: NativeCoordinate;
   waypoints?: {
-    latitude: Double;
-    longitude: Double;
+    latitude: number;
+    longitude: number;
     name?: string;
     separatesLegs?: boolean;
   }[];
@@ -26,6 +24,6 @@ interface NativeProps extends ViewProps {
   travelMode?: string;
 }
 
-export default codegenNativeComponent<NativeProps>(
+export default requireNativeComponent<NativeProps & NativeEventsProps>(
   'MapboxNavigationView'
 ) as HostComponent<NativeProps & NativeEventsProps>;

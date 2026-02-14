@@ -156,10 +156,6 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
                 NavigationSettings.shared.voiceMuted = strongSelf.mute
                 NavigationSettings.shared.distanceUnit = strongSelf.distanceUnit == "imperial" ? .mile : .kilometer
 
-                // Hide native UI buttons (volume, layers, report/feedback)
-                vc.navigationMapView?.floatingButtons = []
-                vc.navigationMapView?.showsRestrictedAreasOnRoute = false
-
                 vc.delegate = strongSelf
 
                 parentVC.addChild(vc)

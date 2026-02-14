@@ -3,7 +3,8 @@ import { requireNativeComponent } from 'react-native';
 import type { NativeEventsProps } from './types';
 
 type NativeCoordinate = number[];
-interface NativeProps extends ViewProps {
+
+export interface MapboxNavigationViewProps extends ViewProps, NativeEventsProps {
   mute?: boolean;
   separateLegs?: boolean;
   distanceUnit?: string;
@@ -24,6 +25,9 @@ interface NativeProps extends ViewProps {
   travelMode?: string;
 }
 
-export default requireNativeComponent<NativeProps & NativeEventsProps>(
-  'MapboxNavigationView'
-) as HostComponent<NativeProps & NativeEventsProps>;
+export default requireNativeComponent<MapboxNavigationViewProps>(
+  'MapboxNavigationView',
+  {
+    nativeOnly: {}
+  }
+) as HostComponent<MapboxNavigationViewProps>;

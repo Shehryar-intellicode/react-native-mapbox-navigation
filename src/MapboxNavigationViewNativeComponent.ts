@@ -25,9 +25,8 @@ export interface MapboxNavigationViewProps extends ViewProps, NativeEventsProps 
   travelMode?: string;
 }
 
-export default requireNativeComponent<MapboxNavigationViewProps>(
-  'MapboxNavigationView',
-  {
-    nativeOnly: {}
-  }
-) as HostComponent<MapboxNavigationViewProps>;
+const MapboxNavigationView = requireNativeComponent<MapboxNavigationViewProps>(
+  'MapboxNavigationView'
+);
+
+export default MapboxNavigationView as HostComponent<MapboxNavigationViewProps>;

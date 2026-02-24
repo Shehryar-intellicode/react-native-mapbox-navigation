@@ -29,31 +29,31 @@ public protocol MapboxCarPlayNavigationDelegate {
 public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
     public weak var navViewController: NavigationViewController?
     public var indexedRouteResponse: IndexedRouteResponse?
-    
+
     var embedded: Bool
     var embedding: Bool
 
     @objc public var startOrigin: NSArray = [] {
         didSet { setNeedsLayout() }
     }
-    
+
     var waypoints: [Waypoint] = [] {
         didSet { setNeedsLayout() }
     }
-    
+
     func setWaypoints(waypoints: [MapboxWaypoint]) {
-      self.waypoints = waypoints.enumerated().map { (index, waypointData) in
-          let name = waypointData.name as? String ?? "\(index)"
-          let waypoint = Waypoint(coordinate: waypointData.coordinate, name: name)
-          waypoint.separatesLegs = waypointData.separatesLegs
-          return waypoint
-      }
+        self.waypoints = waypoints.enumerated().map { (index, waypointData) in
+            let name = waypointData.name as? String ?? "\(index)"
+            let waypoint = Waypoint(coordinate: waypointData.coordinate, name: name)
+            waypoint.separatesLegs = waypointData.separatesLegs
+            return waypoint
+        }
     }
-    
+
     @objc var destination: NSArray = [] {
         didSet { setNeedsLayout() }
     }
-    
+
     @objc var shouldSimulateRoute: Bool = false
     @objc var showsEndOfRouteFeedback: Bool = false
     @objc var showCancelButton: Bool = false
@@ -94,10 +94,8 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
 
     public override func removeFromSuperview() {
         super.removeFromSuperview()
-        // cleanup and teardown any existing resources
         self.navViewController?.removeFromParent()
-        
-        // MARK: End CarPlay Navigation
+
         if let carPlayNavigation = UIApplication.shared.delegate as? MapboxCarPlayNavigationDelegate {
             carPlayNavigation.endNavigation()
         }
@@ -109,33 +107,38 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
 
         embedding = true
 
-        let originWaypoint = Waypoint(coordinate: CLLocationCoordinate2D(latitude: startOrigin[1] as! CLLocationDegrees, longitude: startOrigin[0] as! CLLocationDegrees))
+        let originWaypoint = Waypoint(coordinate: CLLocationCoordinate2D(
+            latitude: startOrigin[1] as! CLLocationDegrees,
+            longitude: startOrigin[0] as! CLLocationDegrees
+        ))
         var waypointsArray = [originWaypoint]
-
-        // Add Waypoints
         waypointsArray.append(contentsOf: waypoints)
 
-        let destinationWaypoint = Waypoint(coordinate: CLLocationCoordinate2D(latitude: destination[1] as! CLLocationDegrees, longitude: destination[0] as! CLLocationDegrees), name: destinationTitle as String)
+        let destinationWaypoint = Waypoint(
+            coordinate: CLLocationCoordinate2D(
+                latitude: destination[1] as! CLLocationDegrees,
+                longitude: destination[0] as! CLLocationDegrees
+            ),
+            name: destinationTitle as String
+        )
         waypointsArray.append(destinationWaypoint)
 
         let profile: MBDirectionsProfileIdentifier
-
         switch travelMode {
-            case "cycling":
-                profile = .cycling
-            case "walking":
-                profile = .walking
-            case "driving-traffic":
-                profile = .automobileAvoidingTraffic
-            default:
-                profile = .automobile
+        case "cycling":
+            profile = .cycling
+        case "walking":
+            profile = .walking
+        case "driving-traffic":
+            profile = .automobileAvoidingTraffic
+        default:
+            profile = .automobile
         }
 
         let options = NavigationRouteOptions(waypoints: waypointsArray, profileIdentifier: profile)
-
-        let locale = self.language.replacingOccurrences(of: "-", with: "_")
+        let locale = (self.language as String).replacingOccurrences(of: "-", with: "_")
         options.locale = Locale(identifier: locale)
-        options.distanceMeasurementSystem =  distanceUnit == "imperial" ? .imperial : .metric
+        options.distanceMeasurementSystem = distanceUnit == "imperial" ? .imperial : .metric
 
         Directions.shared.calculateRoutes(options: options) { [weak self] result in
             guard let strongSelf = self, let parentVC = strongSelf.parentViewController else {
@@ -144,7 +147,7 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
 
             switch result {
             case .failure(let error):
-                strongSelf.onError!(["message": error.localizedDescription])
+                strongSelf.onError?(["message": error.localizedDescription])
             case .success(let response):
                 strongSelf.indexedRouteResponse = response
                 let navigationOptions = NavigationOptions(simulationMode: strongSelf.shouldSimulateRoute ? .always : .never)
@@ -152,7 +155,6 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
 
                 vc.showsEndOfRouteFeedback = strongSelf.showsEndOfRouteFeedback
                 StatusView.appearance().isHidden = strongSelf.hideStatusView
-
                 NavigationSettings.shared.voiceMuted = strongSelf.mute
                 NavigationSettings.shared.distanceUnit = strongSelf.distanceUnit == "imperial" ? .mile : .kilometer
 
@@ -167,8 +169,7 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
 
             strongSelf.embedding = false
             strongSelf.embedded = true
-            
-            // MARK: Start CarPlay Navigation
+
             if let carPlayNavigation = UIApplication.shared.delegate as? MapboxCarPlayNavigationDelegate {
                 carPlayNavigation.startNavigation(with: strongSelf)
             }
@@ -192,17 +193,17 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
 
     public func navigationViewControllerDidDismiss(_ navigationViewController: NavigationViewController, byCanceling canceled: Bool) {
         if (!canceled) {
-            return;
+            return
         }
-        onCancelNavigation?(["message": "Navigation Cancel"]);
+        onCancelNavigation?(["message": "Navigation Cancel"])
     }
 
     public func navigationViewController(_ navigationViewController: NavigationViewController, didArriveAt waypoint: Waypoint) -> Bool {
         onArrive?([
-          "name": waypoint.name ?? waypoint.description,
-          "longitude": waypoint.coordinate.latitude,
-          "latitude": waypoint.coordinate.longitude,
+            "name": waypoint.name ?? waypoint.description,
+            "longitude": waypoint.coordinate.longitude,
+            "latitude": waypoint.coordinate.latitude,
         ])
-        return true;
+        return true
     }
 }

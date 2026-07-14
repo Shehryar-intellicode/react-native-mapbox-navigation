@@ -24,6 +24,17 @@ class MapboxNavigationViewManager(private var reactContext: ReactApplicationCont
     super.onDropViewInstance(view)
   }
 
+  // Props are applied one at a time and in schema-declaration order (distanceUnit comes
+  // before startOrigin/destination in the NativeComponent spec), so navigation can't be
+  // started from an individual @ReactProp setter. This fires once per prop-update batch,
+  // by which point every prop in that batch - including origin/destination - is set;
+  // MapboxNavigationView#initNavigation() itself no-ops until both are present and only
+  // ever runs once.
+  override fun onAfterUpdateTransaction(view: MapboxNavigationView) {
+    super.onAfterUpdateTransaction(view)
+    view.initNavigation()
+  }
+
   override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Map<String, String>> {
     return MapBuilder.of(
       "onLocationChange", MapBuilder.of("registrationName", "onLocationChange"),

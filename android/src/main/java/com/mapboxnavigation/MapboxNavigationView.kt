@@ -489,12 +489,20 @@ class MapboxNavigationView(private val context: ThemedReactContext): FrameLayout
     }
   }
 
+  private var isNavigationInitialized = false
+
   @SuppressLint("MissingPermission")
-  private fun initNavigation() {
-    if (origin == null || destination == null) {
-      sendErrorToReact("origin and destination are required")
+  fun initNavigation() {
+    if (isNavigationInitialized) {
       return
     }
+    if (origin == null || destination == null) {
+      // Not an error yet: props are applied one at a time, and this is called
+      // after every batch (see ViewManager#onAfterUpdateTransaction) until
+      // origin/destination have both landed.
+      return
+    }
+    isNavigationInitialized = true
 
     // Recenter Camera
     val initialCameraOptions = CameraOptions.Builder()
@@ -804,7 +812,6 @@ class MapboxNavigationView(private val context: ThemedReactContext): FrameLayout
 
   fun setDirectionUnit(unit: String) {
     this.distanceUnit = unit
-    initNavigation()
   }
 
   fun setLocal(language: String) {

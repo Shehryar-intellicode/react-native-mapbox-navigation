@@ -119,8 +119,10 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   // mapbox dependencies
-  implementation "com.mapbox.navigationcore:navigation:3.0.2"
-  implementation "com.mapbox.navigationcore:ui-components:3.0.2"
+  // -ndk27 variants: compiled with NDK 27 so bundled .so libraries are 16 KB
+  // page-size aligned, required for Google Play compliance on Android 15+.
+  implementation "com.mapbox.navigationcore:navigation-ndk27:3.26.0"
+  implementation "com.mapbox.navigationcore:ui-components-ndk27:3.26.0"
 
   implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
   implementation 'androidx.cardview:cardview:1.0.0'

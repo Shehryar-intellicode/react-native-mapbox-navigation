@@ -60,10 +60,30 @@ class MapboxNavigationViewManager(private var reactContext: ReactApplicationCont
   }
 
   @ReactProp(name = "distanceUnit")
-  override fun setDirectionUnit(view: MapboxNavigationView?, value: String?) {
+  override fun setDistanceUnit(view: MapboxNavigationView?, value: String?) {
     if (value != null)  {
       view?.setDirectionUnit(value)
     }
+  }
+
+  @ReactProp(name = "separateLegs")
+  override fun setSeparateLegs(view: MapboxNavigationView?, value: Boolean) {
+    // No-op: not implemented on Android.
+  }
+
+  @ReactProp(name = "shouldSimulateRoute")
+  override fun setShouldSimulateRoute(view: MapboxNavigationView?, value: Boolean) {
+    // No-op: iOS only (see types.ts) - planned for a future Android release.
+  }
+
+  @ReactProp(name = "showsEndOfRouteFeedback")
+  override fun setShowsEndOfRouteFeedback(view: MapboxNavigationView?, value: Boolean) {
+    // No-op: iOS only (see types.ts).
+  }
+
+  @ReactProp(name = "hideStatusView")
+  override fun setHideStatusView(view: MapboxNavigationView?, value: Boolean) {
+    // No-op: iOS only (see types.ts).
   }
 
   @ReactProp(name = "waypoints")
@@ -93,7 +113,7 @@ class MapboxNavigationViewManager(private var reactContext: ReactApplicationCont
   }
 
   @ReactProp(name = "language")
-  override fun setLocal(view: MapboxNavigationView?, language: String?) {
+  override fun setLanguage(view: MapboxNavigationView?, language: String?) {
     if (language !== null) {
       view?.setLocal(language)
     }

@@ -78,7 +78,7 @@ export interface MapboxNavigationProps {
    * - 'walking': Navigation for pedestrians.
    * - 'cycling': Navigation optimized for cyclists.
    *
-   * @Default "driving-traffic"
+   * @Default "cycling"
    */
   travelMode?: 'driving' | 'driving-traffic' | 'walking' | 'cycling';
 

@@ -62,7 +62,7 @@ public class MapboxNavigationView: UIView, NavigationViewControllerDelegate {
     @objc var distanceUnit: NSString = "imperial"
     @objc var language: NSString = "us"
     @objc var destinationTitle: NSString = "Destination"
-    @objc var travelMode: NSString = "driving-traffic"
+    @objc var travelMode: NSString = "cycling"
 
     @objc var onLocationChange: RCTDirectEventBlock?
     @objc var onRouteProgressChange: RCTDirectEventBlock?

@@ -95,7 +95,7 @@ class MapboxNavigationView(private val context: ThemedReactContext): FrameLayout
   private var waypointLegs: List<WaypointLegs> = listOf()
   private var distanceUnit: String = DirectionsCriteria.IMPERIAL
   private var locale = Locale.getDefault()
-  private var travelMode: String = DirectionsCriteria.PROFILE_DRIVING
+  private var travelMode: String = DirectionsCriteria.PROFILE_CYCLING
 
   /**
    * Bindings to the example layout.
@@ -829,7 +829,7 @@ class MapboxNavigationView(private val context: ThemedReactContext): FrameLayout
         "cycling" -> DirectionsCriteria.PROFILE_CYCLING
         "driving" -> DirectionsCriteria.PROFILE_DRIVING
         "driving-traffic" -> DirectionsCriteria.PROFILE_DRIVING_TRAFFIC
-        else -> DirectionsCriteria.PROFILE_DRIVING_TRAFFIC
+        else -> DirectionsCriteria.PROFILE_CYCLING
     }
   }
 }
